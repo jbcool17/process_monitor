@@ -1,4 +1,4 @@
-class Pal
+class CustomFramework
   def erb(filename, local = {})
     b = binding
     layout_path = File.expand_path("../../views/layout.erb", __FILE__)

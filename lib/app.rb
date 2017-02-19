@@ -1,7 +1,7 @@
-require_relative 'pal'
+require_relative 'custom_framework'
 require_relative 'advice'
 
-class App < Pal
+class App < CustomFramework
   def call(env)
     case env['REQUEST_PATH']
     when '/'
