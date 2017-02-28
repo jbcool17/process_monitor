@@ -12,6 +12,10 @@ class CustomFramework
     ERB.new(layout_content).result(b)
   end
 
+  def json(data)
+    data.to_json
+  end
+
   def response(status, headers, body = '')
     body = yield if block_given?
     [status, headers, [body]]

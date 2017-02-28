@@ -10,12 +10,18 @@ class App < CustomFramework
       response(status, headers) do
         erb :index
       end
-    when '/advice'
+    when '/all'
       status = '200'
       headers = {"Content-Type" => 'text/html'}
       piece_of_advice = Advice.new.generate
       response(status, headers) do
         erb :advice, message: piece_of_advice
+      end
+    when '/status'
+      status = '200'
+      headers = {"Content-Type" => 'application/json'}
+      response(status, headers) do
+        json({animal: "dogs"})
       end
     else
       status = '404'

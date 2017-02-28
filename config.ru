@@ -1,4 +1,5 @@
 #config.ru
+require 'json'
 require_relative './lib/app'
 
 # Serve requests to assets in /images, /js and /css with public/images, public/js and public/css.
