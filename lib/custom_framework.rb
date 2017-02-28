@@ -20,7 +20,7 @@ class CustomFramework
     params = {}
 
     query_string.split('&').each do |q|
-      params[q.split('=')[0]] = q.split('=')[1]
+      params[q.split('=')[0].to_sym] = q.split('=')[1]
     end
 
     params
