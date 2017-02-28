@@ -1,7 +1,4 @@
-# rack-app
-
-- creating a web framework with Rack
-- added layout template
+# rack-app - process monitor view
 
 
 ## Styles
