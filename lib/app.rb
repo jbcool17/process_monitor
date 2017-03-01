@@ -17,20 +17,9 @@ class App < CustomFramework
       if env['QUERY_STRING'].length > 0 && params[:search]
         status = '200'
         headers = {"Content-Type" => 'application/json'}
-        # search = 'ruby'
-
-        # Will Move to Own Class
-        output = `ps -c $(pgrep -f #{params[:search]})`.split(/\n/)
-        ps_headers = output.slice!(0).split(' ')
-        case ps_headers.length
-        when 5
-          processes_data = output.map { |pro| [pro.strip.split(' ').slice(0,4) , pro.strip.split(' ').slice(4)].join(' ').split(' ') }
-        when 4
-          processes_data = output.map { |pro| [pro.strip.split(' ').slice(0,3) , pro.strip.split(' ').slice(3)].join(' ').split(' ') }
-        end
 
         response(status, headers) do
-          json({status: 'This is json.', search: params[:search], headers: ps_headers, processes: processes_data})
+          json ProcessMonitor.processes(params[:search])
         end
       else
         status = '404'
@@ -46,14 +35,8 @@ class App < CustomFramework
         status = '200'
         headers = {"Content-Type" => 'application/json'}
 
-        # Will Move to Own Class
-        output = `ps aux #{params[:pid]}`.split(/\n/)
-        ps_headers = output.slice!(0).split(' ')
-        process = output.join(' ').gsub(/ +/, ' ').split(' ').slice!(0,10)
-        command = output.join(' ').gsub(/ +/, ' ').split(' ').slice(10..-1).join(' ')
-
         response(status, headers) do
-          json({ status: 'This is json.', headers: ps_headers, process: process, command: command, params: params })
+          json ProcessMonitor.status(params[:pid])
         end
       else
         status = '404'
