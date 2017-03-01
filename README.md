@@ -1,5 +1,9 @@
 # rack-app - process monitor view
 
+```
+# Setup to use Mac OSX CLI Tool(ps)
+$ rackup
+```
 
 ## Styles
 - uses sass for styles

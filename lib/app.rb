@@ -11,17 +11,27 @@ class App < CustomFramework
         erb :index
       end
     when '/processes'
-      status = '200'
-      headers = {"Content-Type" => 'application/json'}
-      search = 'ruby'
+      params = params(env['QUERY_STRING'])
 
-      # Will Move to Own Class
-      output = `ps $(pgrep -f #{search})`.split(/\n/)
-      ps_headers = output.slice!(0).split(' ')
-      processes_data = output.map { |pro| [pro.strip.split(' ').slice(0,4) , pro.strip.split(' ').slice(4)].join(' ').split(' ') }
+      if env['QUERY_STRING'].length > 0 && params[:search]
+        status = '200'
+        headers = {"Content-Type" => 'application/json'}
+        search = 'ruby'
 
-      response(status, headers) do
-        json({status: 'This is json.', search: search, headers: ps_headers, processes: processes_data})
+        # Will Move to Own Class
+        output = `ps $(pgrep -f #{params[:search]})`.split(/\n/)
+        ps_headers = output.slice!(0).split(' ')
+        processes_data = output.map { |pro| [pro.strip.split(' ').slice(0,4) , pro.strip.split(' ').slice(4)].join(' ').split(' ') }
+
+        response(status, headers) do
+          json({status: 'This is json.', search: search, headers: ps_headers, processes: processes_data})
+        end
+      else
+        status = '404'
+        headers = {"Content-Type" => 'application/json'}
+        response(status, headers) do
+          json(status: 'Search Term not Found.', example: '/processes?search=ssh')
+        end
       end
     when '/status'
       params = params(env['QUERY_STRING'])
@@ -43,7 +53,7 @@ class App < CustomFramework
         status = '404'
         headers = {"Content-Type" => 'application/json'}
         response(status, headers) do
-          json(status: 'PID not Found.')
+          json(status: 'PID not Found.', example: '/status?pid=5677')
         end
       end
 

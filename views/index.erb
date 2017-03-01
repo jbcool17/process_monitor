@@ -1,2 +1,100 @@
-<h2>Hello World</h2>
-<p><em>processes table goes here.</em></p>
+<label for="search">ENTER A PROCESS NAME: </label>
+<input id='search' type="text" name="search" value="">
+<div id="info">
+ <table class='table'>
+   <thead>
+   </thead>
+   <tbody>
+     <tr id='process'>
+     </tr>
+   </tbody>
+ </table>
+</div>
+<p>Find me in app/views/process/index.html.erb</p>
+
+<table id='all' class='table table-striped table-hover'>
+  <thead>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+
+
+<script type="text/javascript">
+  $('#info').hide();
+  var nodes = [];
+  var test = '';
+  var timer, loadProcessDataEvent;
+
+  setInterval(function(){ loadData() }, 2000)
+
+  function loadData(){
+    $.getJSON('http://localhost:9292/processes?search=' + $('#search')[0].value, function(data){
+      // console.log(data)
+      // BUILD MAIN TABLE
+      // Headers
+      headers = data.headers.map(function(h){
+        return '<th class="col-xs-2">' + h + '</th>'
+      });
+
+      $('#all thead').html(headers)
+
+      // Body
+      processHTML = data.processes.map(function(process){
+        // Generating HTML
+        nodes = process.map(function(p){ return '<td class="col-xs-2">' + p + '</td>' })
+
+        return '<tr id='+ process[0] +'>' + nodes + '</tr>'
+      });
+
+      $('#all tbody').html(processHTML);
+      $('table#all').css('margin-right', '10px');
+      $('table#all').css('margin-left', '10px');
+
+      // SETTING UI FOR MAIN TABLE
+      $('table#all tbody tr').on('click', function(e){
+        console.log(e.currentTarget.id)
+        loadProcessDataEventId = e.currentTarget.id
+        timer = setInterval(function(){loadProcessData(loadProcessDataEventId)}, 1000)
+
+          $('#info').on('click', function(){
+            $('#info').hide();
+            clearInterval(timer);
+          });
+
+        });
+
+      })
+    }
+
+
+  function loadProcessData(id) {
+    console.log(id)
+    $.getJSON('http://localhost:9292/status?pid=' + id, function(data){
+      test = data
+      console.log(data)
+      var headers = data.headers.map(function(h){
+        return '<th class="col-xs-1">' + h + '</th>'
+      });
+      var processFields = data.process.map (function(field){
+        return '<td>' + field + '</td>'
+      });
+      processFields.push('<td>' + data.command + '</td>')
+      $('#info').show();
+      $('#info').css('position', 'fixed');
+      $('#info').css('top', '0px');
+      $('#info').css('right', '10px');
+      $('#info').css('left', '10px');
+      $('#info').css('background', 'rgba(0,0,0,0.75)');
+      $('#info').css('color', 'red');
+      $('#info').css('border', '2px solid black');
+      $('#info').css('box-shadow', '4px 6px 13px black');
+      $('#info').css('padding', '5px');
+      $('#info').css('overflow', 'scroll');
+
+      $('#info thead').html(headers);
+      $('#info tbody tr').html(processFields);
+  })
+  }
+
+</script>

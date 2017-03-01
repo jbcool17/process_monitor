@@ -8,3 +8,27 @@ nav  {
         }
       }
 }
+
+
+#info {
+  position: fixed !important;
+  top: 10px;
+  right: 10px;
+  left: 10px;
+  background: rgba(0,0,0,0.75);
+  color: red;
+  border: 2px solid black;
+  box-shadow: 4px 6px 13px black;
+  padding: 5px;
+  overflow: scroll;
+}
+
+
+// #headers {
+//   text-align: center;
+//   font-weight: bold;
+// }
+
+// #process {
+//   text-align: center;
+// }
