@@ -16,15 +16,20 @@ class App < CustomFramework
       if env['QUERY_STRING'].length > 0 && params[:search]
         status = '200'
         headers = {"Content-Type" => 'application/json'}
-        search = 'ruby'
+        # search = 'ruby'
 
         # Will Move to Own Class
-        output = `ps $(pgrep -f #{params[:search]})`.split(/\n/)
+        output = `ps -c $(pgrep -f #{params[:search]})`.split(/\n/)
         ps_headers = output.slice!(0).split(' ')
-        processes_data = output.map { |pro| [pro.strip.split(' ').slice(0,4) , pro.strip.split(' ').slice(4)].join(' ').split(' ') }
+        case ps_headers.length
+        when 5
+          processes_data = output.map { |pro| [pro.strip.split(' ').slice(0,4) , pro.strip.split(' ').slice(4)].join(' ').split(' ') }
+        when 4
+          processes_data = output.map { |pro| [pro.strip.split(' ').slice(0,3) , pro.strip.split(' ').slice(3)].join(' ').split(' ') }
+        end
 
         response(status, headers) do
-          json({status: 'This is json.', search: search, headers: ps_headers, processes: processes_data})
+          json({status: 'This is json.', search: params[:search], headers: ps_headers, processes: processes_data})
         end
       else
         status = '404'
