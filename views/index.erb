@@ -37,12 +37,13 @@
     $.getJSON('http://localhost:9292/processes?search=' + $('#search')[0].value, function(data){
       console.log(data)
       $('#live-info').show();
-      
+
       // BUILD MAIN TABLE
       // Headers
       headers = data.headers.map(function(h){
         return '<th class="col-xs-2">' + h + '</th>'
       });
+      headers.push('<th class="col-xs-2">Kill</th>')
 
       $('#all thead').html(headers)
 
@@ -50,28 +51,42 @@
       processHTML = data.processes.map(function(process){
         // Generating HTML
         nodes = process.map(function(p){ return '<td class="col-xs-2">' + p + '</td>' })
-
+        nodes.push('<td class="col-xs-2"><button class="kill btn btn-danger">Kill Me!</button></td>')
         return '<tr id='+ process[0] +'>' + nodes + '</tr>'
       });
+
 
       $('#all tbody').html(processHTML);
       $('table#all').css('margin-right', '10px');
       $('table#all').css('margin-left', '10px');
 
       // SETTING UI FOR MAIN TABLE
-      $('table#all tbody tr').on('click', function(e){
+      $('table#all tbody tr td').on('click', function(e){
         clearInterval(timer);
-        console.log(e.currentTarget.id)
-        loadProcessDataEventId = e.currentTarget.id
+        console.log(e.currentTarget.parentElement.id)
+        loadProcessDataEventId = e.currentTarget.parentElement.id
         timer = setInterval(function(){loadProcessData(loadProcessDataEventId)}, 1000)
 
           $('#info').on('click', function(){
             $('#info').hide();
             clearInterval(timer);
           });
+      });
 
-        });
+        $('.kill').on('click', function(e){
+          var id = e.currentTarget.parentElement.parentElement.id
+          console.log('KILL .' + id);
 
+          setTimeout(function(){
+            $.getJSON('http://localhost:9292/kill?pid=' + id, function(data){
+              $('#' + id).hide();
+              $('#info').hide();
+              clearInterval(timer);
+              console.log(data);
+            })
+          }, 2000)
+
+        })
       })
     }
 

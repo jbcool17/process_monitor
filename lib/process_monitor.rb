@@ -22,5 +22,11 @@ class ProcessMonitor
 
       { status: 'This is json.', headers: ps_headers, process: process, command: command }
     end
+
+    def kill(pid)
+      `kill -9 #{pid}`
+      
+      { status: 'This is json.', pid: pid }
+    end
   end
 end

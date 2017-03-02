@@ -45,6 +45,24 @@ class App < CustomFramework
           json(status: 'PID not Found.', example: '/status?pid=5677')
         end
       end
+    when '/kill'
+      params = params(env['QUERY_STRING'])
+
+      if env['QUERY_STRING'].length > 0 && params[:pid]
+        status = '200'
+        headers = {"Content-Type" => 'application/json'}
+
+        response(status, headers) do
+          json ProcessMonitor.kill(params[:pid])
+        end
+      else
+        status = '404'
+        headers = {"Content-Type" => 'application/json'}
+        response(status, headers) do
+          json(status: 'PID not Found.', example: '/status?pid=5677')
+        end
+      end
+
 
     else
       status = '404'
