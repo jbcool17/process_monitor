@@ -1,7 +1,7 @@
 class ProcessMonitor
   class << self
     def processes(search_query)
-      output = `ps -c $(pgrep -f #{search_query})`.split(/\n/)
+      output = `ps $(pidof #{search_query})`.split(/\n/)
       ps_headers = output.slice!(0).split(' ')
 
       case ps_headers.length
@@ -25,7 +25,7 @@ class ProcessMonitor
 
     def kill(pid)
       `kill -9 #{pid}`
-      
+
       { status: 'This is json.', pid: pid }
     end
   end

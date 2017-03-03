@@ -1,7 +1,7 @@
 # rack-app - process monitor view
 
 ```
-# This Setup to use Mac OSX CLI Tools(ps / pgrep)
+# This Setup to use Mac OSX CLI Tools(ps / pidof)
 $ rackup
 ```
 
